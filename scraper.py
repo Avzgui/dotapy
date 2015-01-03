@@ -2,7 +2,7 @@ __author__ = 'antoine'
 
 
 import requests, re, json
-from BeautifulSoup import BeautifulSoup
+from bs4 import BeautifulSoup
 
 #r = requests.get('http://playdota.com/heroes/admiral')
 # we dont spam playdota.com
@@ -40,20 +40,28 @@ hero = {
 
 def extract(s):
     l = []
-    for t in s.split():
-        try:
-            if(t.isdigit()):
-                l.append(t)
-            elif(str.match(t)):
-                hero['baseStrength'] = re.findall("Strength(\d+)", t)[0]
-            elif(a.match(t)):
-                hero['baseAgility'] = re.findall("Agility(\d+)", t)[0]
-            elif(i.match(t)):
-                hero['baseIntelligence'] = re.findall("Intelligence(\d+)", t)[0]
+    try:
+        concat = ''
+        if(str.match(s)):
+            hero['baseStrength'] = re.findall("Strength (\d+)", s)[0]
+            if re.findall("\+ [-+]?[0-9]*\.?[0-9]+$", s).__len__() == 1:
+                hero['gainStrength'] = re.findall("[-+]?[0-9]*\.?[0-9]+$", s)[0]
             else:
-                l.append(float(t))
-        except ValueError:
-            pass
+                hero['gainStrength'] =  re.findall("\+ (\d+)", s)[0]
+        elif(a.match(s)):
+            hero['baseAgility'] = re.findall("Agility (\d+)", s)[0]
+            if re.findall("\+ [-+]?[0-9]*\.?[0-9]+$", s).__len__() == 1:
+                hero['gainAgility'] = re.findall("[-+]?[0-9]*\.?[0-9]+$", s)[0]
+            else:
+                hero['gainAgility'] =  re.findall("\+ (\d+)", s)[0]
+        elif(i.match(s)):
+            hero['baseIntelligence'] = re.findall("Intelligence (\d+)", s)[0]
+            if re.findall("\+ [-+]?[0-9]*\.?[0-9]+$", s).__len__() == 1:
+                hero['gainIntelligence'] = re.findall("[-+]?[0-9]*\.?[0-9]+$", s)[0]
+            else:
+                hero['gainIntelligence'] =  re.findall("\+ (\d+)", s)[0]
+    except ValueError:
+        pass
     return l
 
 
@@ -71,23 +79,19 @@ hero['introduction'] = soup.find(id="info").p.text
 
 all = [h2.text for h2 in hLeft.findAll('li')]
 
-advanced = hRight.findAll('ul', attrs={'class':'adv'})
+advanced = soup.findAll('ul', attrs={'class':'adv'})
 
-for tu in advanced[0]:
-    if tu.li is not None:
-        print tu.li
+#for strong_tag in advanced:
+#    for li in strong_tag:
+#       print '(',li, ')'
 
 
 
 #------------------------------
+# Extract base and gain stats
 total = []
 for test in all:
-    total.append(extract(test))
-
-hero['gainStrength'] = total[0][0]
-hero['gainIntelligence'] = total[1][0]
-hero['gainAgility'] = total[2][0]
-
+    extract(test)
 #------------------------------
 
 
