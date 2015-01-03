@@ -14,7 +14,6 @@ a = re.compile("^Agility")
 i = re.compile("^Intelligence")
 
 hero = {
-        'id': 1,
         'name': '',
         'surname': '',
         'MainStat': '',
@@ -29,13 +28,11 @@ hero = {
         'damageMax': '',
         'armor': '',
         'moveSpeed': '',
-        'attackRange': '',
-        'attackAnimation': '',
-        'CastingAnimation': '',
         'BaseAttackTime': '',
         'MissileSpeed': '',
         'SightRange': '',
         'introduction': '',
+        'background': '',
     }
 
 def extract(s):
@@ -76,14 +73,43 @@ hRight = soup.find('div',attrs={'class':'hRight'})
 hero['name'] = hLeft.h1.findAll('img',attrs={'alt':True})[0]['alt']
 hero['surname'] = [h2.text for h2 in soup.findAll('h1', attrs={'class': 'class'})][0]
 hero['introduction'] = soup.find(id="info").p.text
+hero['background'] = soup.find(id="info").findAll('p')[1].text
 
 all = [h2.text for h2 in hLeft.findAll('li')]
 
 advanced = soup.findAll('ul', attrs={'class':'adv'})
 
-#for strong_tag in advanced:
-#    for li in strong_tag:
-#       print '(',li, ')'
+advStats = []
+for ul in advanced:
+    for li in ul:
+        if "\n" not in li:
+            if re.findall("^ Affiliation",li.text).__len__() == 1:
+                hero['affiliation'] =  li.label.next_sibling.strip()
+            if re.findall("^ Damage",li.text).__len__() == 1:
+                hero['damageMin'] = re.split("-",li.label.next_sibling.strip())[0].strip()
+                hero['damageMax'] =  re.split("-",li.label.next_sibling.strip())[1].strip()
+            if re.findall("^ Armor",li.text).__len__() == 1:
+                hero['armor'] =  li.label.next_sibling.strip()
+            if re.findall("^ Movespeed",li.text).__len__() == 1:
+                hero['moveSpeed'] =  li.label.next_sibling.strip()
+            if re.findall("^ Missile Speed:",li.text).__len__() == 1:
+                hero['MissileSpeed'] =  li.label.next_sibling.strip()
+            if re.findall("^ Sight Range",li.text).__len__() == 1:
+                hero['SightRangeDay'] =  re.split("/",li.label.next_sibling.strip())[0].strip()
+                hero['SightRangeNight'] =  re.split("/",li.label.next_sibling.strip())[1].strip()
+            if re.findall("^ Base Attack Time",li.text).__len__() == 1:
+                hero['BaseAttackTime'] =  li.label.next_sibling.strip()
+            if re.findall("^ Casting Animation",li.text).__len__() == 1:
+                hero['CastingAnimationPoint'] =  re.split("/",li.label.next_sibling.strip())[0].strip()
+                hero['CastingAnimationBackswing'] =  re.split("/",li.label.next_sibling.strip())[1].strip()
+            if re.findall("^ Attack Animation",li.text).__len__() == 1:
+                hero['attackAnimationPoint'] =  re.split("/",li.label.next_sibling.strip())[0].strip()
+                hero['attackAnimationBackswing'] =  re.split("/",li.label.next_sibling.strip())[1].strip()
+            if re.findall("^ Attack Range",li.text).__len__() == 1:
+                hero['attackRangeValue'] =  re.split("\(",li.label.next_sibling.strip())[0].strip()
+                hero['attackRangeType'] =  re.split("\)",re.split("\(",li.label.next_sibling.strip())[1].strip())[0]
+
+
 
 
 
