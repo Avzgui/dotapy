@@ -1,7 +1,10 @@
+from app.models import Hero
+
 __author__ = 'antoine'
 
 
 import requests, re, json
+from app import db, models
 from bs4 import BeautifulSoup
 
 hero = {
@@ -25,6 +28,15 @@ hero = {
         'introduction': '',
         'background': '',
 }
+
+def addInDB(h):
+
+    u = models.Hero(name=h['name'],surname=h['surname'])
+    db.session.add(u)
+    db.session.commit()
+    print 'insert'
+
+
 
 str = re.compile("^Strength")
 a = re.compile("^Agility")
@@ -123,8 +135,6 @@ if r.status_code == 200:
                                 if attackRange.__len__() == 1:
                                     print re.split("\(",li.label.next_sibling.strip())[0]
                                     hero['attackRangeType'] =  re.split("\)",re.split("\(",li.label.next_sibling.strip())[1].strip())[0]
-
-
-
+                                addInDB(hero)
 
                             print json.dumps(hero, indent=4, sort_keys=True)

@@ -1,0 +1,15 @@
+<html>
+  <head>
+    {% if title %}
+    <title>{{ title }} - Dotapy </title>
+    {% else %}
+    <title>Welcome to dotapy</title>
+    {% endif %}
+  </head>
+  <body>
+      <h1>List of heroes</h1>
+        {% for hero in Heroes %}
+            <div><p>{{ hero.name }}  -  <b>{{ hero.surname }}</b></p></div>
+        {% endfor %}
+  </body>
+</html>
