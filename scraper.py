@@ -32,6 +32,12 @@ hero = {
     'attackAnimationPoint': '',
 }
 
+def num(s):
+    try:
+        return int(s)
+    except ValueError:
+        return float(s)
+
 
 def addInDB(h):
     u = models.Hero(name=h['name'],
@@ -50,8 +56,8 @@ def addInDB(h):
                     damageMin=h['damageMin'],
                     damageMax=h['damageMax'],
                     missileSpeed=h['missileSpeed'],
-                    sightRangeDay=h['sightRangeDay'],
-                    sightRangeNight=h['sightRangeNight'],
+                    # sightRangeDay=h['sightRangeDay'],
+                    # sightRangeNight=h['sightRangeNight'],
                     baseAttackTime=h['baseAttackTime'],
                     castingAnimationPoint=h['castingAnimationPoint'],
                     castingAnimationBackswing=h['castingAnimationBackswing'],
@@ -62,7 +68,7 @@ def addInDB(h):
     )
     db.session.add(u)
     db.session.commit()
-    print 'insert'
+    print 'insert bdd ok'
 
 
 str = re.compile("^Strength")
@@ -138,30 +144,26 @@ if r.status_code == 200:
                             if re.findall("^ Affiliation", li.text).__len__() == 1:
                                 hero['affiliation'] = li.label.next_sibling.strip()
                             if re.findall("^ Damage", li.text).__len__() == 1:
-                                hero['damageMin'] = int(re.split("-", li.label.next_sibling.strip())[0].strip())
-                                hero['damageMax'] = int(re.split("-", li.label.next_sibling.strip())[1].strip())
+                                hero['damageMin'] = num(re.split("-", li.label.next_sibling.strip())[0].strip())
+                                hero['damageMax'] = num(re.split("-", li.label.next_sibling.strip())[1].strip())
                             if re.findall("^ Armor", li.text).__len__() == 1:
-                                hero['armor'] = float(li.label.next_sibling.strip())
+                                hero['armor'] = num(li.label.next_sibling.strip())
                             if re.findall("^ Movespeed", li.text).__len__() == 1:
-                                hero['moveSpeed'] = float(li.label.next_sibling.strip())
+                                hero['moveSpeed'] = num(li.label.next_sibling.strip())
                             if re.findall("^ Missile Speed:", li.text).__len__() == 1:
-                                hero['missileSpeed'] = float(li.label.next_sibling.strip())
-                            if re.findall("^ Sight Range", li.text).__len__() == 1:
-                                hero['sightRangeDay'] = float(re.split("/", li.label.next_sibling.strip())[0].strip())
-                                hero['sightRangeNight'] = float(re.split("/", li.label.next_sibling.strip())[1].strip())
+                                hero['missileSpeed'] = li.label.next_sibling.strip()
                             if re.findall("^ Base Attack Time", li.text).__len__() == 1:
-                                hero['baseAttackTime'] = float(li.label.next_sibling.strip())
+                                hero['baseAttackTime'] = num(li.label.next_sibling.strip())
                             if re.findall("^ Casting Animation", li.text).__len__() == 1:
-                                hero['castingAnimationPoint'] = float(re.split("/", li.label.next_sibling.strip())[0].strip())
-                                hero['castingAnimationBackswing'] = float(re.split("/", li.label.next_sibling.strip())[1].strip())
+                                hero['castingAnimationPoint'] = num(re.split("/", li.label.next_sibling.strip())[0].strip())
+                                hero['castingAnimationBackswing'] = num(re.split("/", li.label.next_sibling.strip())[1].strip())
                             if re.findall("^ Attack Animation", li.text).__len__() == 1:
-                                hero['attackAnimationPoint'] = float(re.split("/", li.label.next_sibling.strip())[0].strip())
-                                hero['attackAnimationBackswing'] = float(re.split("/", li.label.next_sibling.strip())[1].strip())
+                                hero['attackAnimationPoint'] = num(re.split("/", li.label.next_sibling.strip())[0].strip())
+                                hero['attackAnimationBackswing'] = num(re.split("/", li.label.next_sibling.strip())[1].strip())
                             if re.findall("^ Attack Range", li.text).__len__() == 1:
                                 attackRange = re.split("\(", li.label.next_sibling.strip())[0]
-                                hero['attackRangeValue'] = float(re.split("\(", li.label.next_sibling.strip())[0].strip())
+                                hero['attackRangeValue'] = num(re.split("\(", li.label.next_sibling.strip())[0].strip())
                                 if attackRange.__len__() == 1:
-                                    print re.split("\(", li.label.next_sibling.strip())[0]
-                                    hero['attackRangeType'] = float(re.split("\)", re.split("\(", li.label.next_sibling.strip())[1].strip())[0])
+                                   hero['attackRangeType'] = re.split("\)", re.split("\(", li.label.next_sibling.strip())[1].strip())[0]
+
                                 addInDB(hero)
-                                print json.dumps(hero, indent=4, sort_keys=True)
