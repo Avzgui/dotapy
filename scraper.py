@@ -24,8 +24,8 @@ hero = {
     'moveSpeed': '',
     'BaseAttackTime': '',
     'missileSpeed': '',
-    'sightRangeDay': '',
-    'sightRangeNight': '',
+    'sightRangeDay': '0',
+    'sightRangeNight': '0',
     'introduction': '',
     'background': '',
     'attackAnimationBackswing': '',
@@ -33,13 +33,13 @@ hero = {
 }
 
 def num(s):
-    if not s:
         try:
             return int(s)
         except ValueError:
-            return float(s)
-    else:
-        return 0
+            try:
+                return float(s)
+            except ValueError:
+                return 0
 
 def addInDB(h):
     u = models.Hero(name=h['name'],
@@ -58,8 +58,8 @@ def addInDB(h):
                     damageMin=h['damageMin'],
                     damageMax=h['damageMax'],
                     missileSpeed=h['missileSpeed'],
-                    # sightRangeDay=h['sightRangeDay'],
-                    # sightRangeNight=h['sightRangeNight'],
+                    sightRangeDay=h['sightRangeDay'],
+                    sightRangeNight=h['sightRangeNight'],
                     baseAttackTime=h['baseAttackTime'],
                     castingAnimationPoint=h['castingAnimationPoint'],
                     castingAnimationBackswing=h['castingAnimationBackswing'],

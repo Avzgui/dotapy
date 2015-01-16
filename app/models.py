@@ -39,5 +39,22 @@ class Hero(db.Model):
             'name': self.name,
             'surname': self.surname,
             'gainStrenght': self.gainStrength,
-            'baseStrenght': self.baseStrength
+            'baseStrenght': self.baseStrength,
+            'gainAgility': self.gainAgility,
+            'baseAgility': self.baseAgility,
+            'gainIntelligence': self.gainIntelligence,
+            'baseIntelligence': self.baseIntelligence,
+            'affiliation': self.affiliation,
+            'damageMin': self.damageMin,
+            'damageMax': self.damageMax,
+            'armor': self.armor,
+            'moveSpeed': self.moveSpeed,
+            'castingAnimationPoint': self.castingAnimationPoint,
+            'castingAnimationBackswing': self.castingAnimationBackswing,
+            'attackAnimationPoint': self.attackAnimationPoint,
+            'attackAnimationBackswing': self.attackAnimationBackswing,
+            'attackRangeValue': self.attackRangeValue,
+            'attackRangeType': self.attackRangeType,
+            'sightRangeDay': self.sightRangeDay,
+            'sightRangeNight': self.sightRangeNight
         }
