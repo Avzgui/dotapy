@@ -31,5 +31,13 @@ class Hero(db.Model):
     sightRangeDay = db.Column(db.Float(4))
     sightRangeNight = db.Column(db.Float(4))
 
-    def __repr__(self):
-        return '<Hero %r>' % (self.name + ' - ' + self.surname)
+    @property
+    def serialize(self):
+        """Return Hero data in easily serializeable format"""
+        return {
+            'id': self.id,
+            'name': self.name,
+            'surname': self.surname,
+            'gainStrenght': self.gainStrength,
+            'baseStrenght': self.baseStrength
+        }

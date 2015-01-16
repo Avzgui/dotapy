@@ -33,11 +33,13 @@ hero = {
 }
 
 def num(s):
-    try:
-        return int(s)
-    except ValueError:
-        return float(s)
-
+    if not s:
+        try:
+            return int(s)
+        except ValueError:
+            return float(s)
+    else:
+        return 0
 
 def addInDB(h):
     u = models.Hero(name=h['name'],
@@ -152,6 +154,9 @@ if r.status_code == 200:
                                 hero['moveSpeed'] = num(li.label.next_sibling.strip())
                             if re.findall("^ Missile Speed:", li.text).__len__() == 1:
                                 hero['missileSpeed'] = li.label.next_sibling.strip()
+                            if re.findall("^ Sight Range", li.text).__len__() == 1:
+                                hero['sightRangeDay'] = num(re.split("/", li.label.next_sibling.strip())[0].strip())
+                                hero['sightRangeNight'] = num(re.split("/", li.label.next_sibling.strip())[1].strip())
                             if re.findall("^ Base Attack Time", li.text).__len__() == 1:
                                 hero['baseAttackTime'] = num(li.label.next_sibling.strip())
                             if re.findall("^ Casting Animation", li.text).__len__() == 1:
